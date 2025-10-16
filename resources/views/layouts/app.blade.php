@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,16 +13,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        .navbar-brand { font-weight: bold; color: #c77dff !important; }
-        .footer { background-color: #343a40; color: white; padding: 40px 0; margin-top: 50px; }
-        .card-service:hover { transform: scale(1.02); transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .btn-purple { background-color: #c77dff; color: white; }
-        .btn-purple:hover { background-color: #9d4edd; }
-        .dropdown-toggle::after { display: none; }
+        .navbar-brand {
+            font-weight: bold;
+            color: #c77dff !important;
+        }
+
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .card-service:hover {
+            transform: scale(1.02);
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-purple {
+            background-color: #c77dff;
+            color: white;
+        }
+
+        .btn-purple:hover {
+            background-color: #9d4edd;
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
     </style>
 
     @stack('styles')
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
@@ -43,15 +69,21 @@
 
                 <!-- User Section -->
                 <ul class="navbar-nav">
-                    @if(session('jwt_token') && session('user_name'))
+                    @if (session('jwt_token') && session('user_name'))
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i> Xin chào, <strong>&nbsp;{{ session('user_name') }}</strong>
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                                id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> Xin chào,
+                                <strong>&nbsp;{{ session('user_name') }}</strong>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href=""><i class="fas fa-chart-line me-2"></i>Bảng điều khiển</a></li>
-                                <li><a class="dropdown-item" href=""><i class="fas fa-calendar-check me-2"></i>Lịch hẹn của tôi</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href=""><i class="fas fa-chart-line me-2"></i>Bảng
+                                        điều khiển</a></li>
+                                <li><a class="dropdown-item" href=""><i
+                                            class="fas fa-calendar-check me-2"></i>Lịch hẹn của tôi</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -80,7 +112,7 @@
     </nav>
 
     <!-- Flash Messages -->
-    @if(session('success'))
+    @if (session('success'))
         <div class="container mt-3">
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
@@ -89,7 +121,7 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if (session('error'))
         <div class="container mt-3">
             <div class="alert alert-danger alert-dismissible fade show">
                 {{ session('error') }}
@@ -109,7 +141,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5>Về Anh Thơ Spa</h5>
-                    <p>Chuyên cung cấp các dịch vụ chăm sóc da, massage, liệu trình trị liệu uy tín và chuyên nghiệp tại TP.HCM.</p>
+                    <p>Chuyên cung cấp các dịch vụ chăm sóc da, massage, liệu trình trị liệu uy tín và chuyên nghiệp tại
+                        TP.HCM.</p>
                 </div>
                 <div class="col-md-4">
                     <h5>Liên hệ</h5>
@@ -135,4 +168,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
 </body>
+
 </html>

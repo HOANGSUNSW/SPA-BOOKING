@@ -60,7 +60,7 @@ class WebAuthController extends Controller
         $user = auth()->user();
         session(['jwt_token' => $token, 'user_name' => $user->name]);
 
-        return redirect()->route('dashboard')->with('success', 'Đăng nhập thành công!');
+        return redirect()->route('app')->with('success', 'Đăng nhập thành công!');
     }
 
     // Đăng xuất
