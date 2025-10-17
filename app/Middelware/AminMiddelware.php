@@ -9,10 +9,14 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
-            return $next($request);
+        if (!auth()->check()) {
+            return redirect()->route('login.form')->with('error', 'Vui lòng đăng nhập.');
         }
 
-        return redirect()->route('home')->with('error', 'Access denied!');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('login.form')->with('error', 'Bạn không có quyền truy cập.');
+        }
+
+        return $next($request);
     }
 }

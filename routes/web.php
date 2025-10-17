@@ -3,23 +3,35 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebAuthController;
-Route::get('/', fn() => redirect('/login'))->name('home');
-Route::get('/', fn() => redirect('/register'))->name('home');
-Route::get('/login', [WebAuthController::class, 'showLoginForm'])->name('login.form');
-Route::get('/register', [WebAuthController::class, 'showRegisterForm'])->name('register.form');
+    use App\Http\Controllers\AdminController;
+Route::get('/app', function() {
+    // Nếu login → hiển thị dashboard admin
+    if(auth()->check() && auth()->user()->role === 'admin') {
+        return view('admin.dashboard');
+    }
+    // Nếu chưa login → chuyển sang login
+    return redirect()->route('login.form');
+})->name('app');
 
+// Trang gốc '/' redirect sang /app
+Route::get('/', fn() => redirect()->route('app'));
+
+// ----------------------
+// Auth: Login / Register / Logout
+// ----------------------
+Route::get('/login', [WebAuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [WebAuthController::class, 'login'])->name('login');
+
+Route::get('/register', [WebAuthController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [WebAuthController::class, 'register'])->name('register');
+
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
 
-// Các trang sau đăng nhập
-Route::get('/admin/dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
-Route::get('/staff/dashboard', fn() => view('staff.dashboard'))->name('staff.dashboard');
-Route::get('/user/home', fn() => view('user.home'))->name('user.home');
 
+Route::get('/admin/dashboard', fn() => view('admin.dashboard'))
+    ->middleware(['auth', 'admin'])
+    ->name('admin.dashboard');
 
-
-
-Route::get('/admin/dashboard', function() {
+Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
-})->middleware('admin');
+})->name('admin.dashboard');

@@ -45,23 +45,23 @@ class WebAuthController extends Controller
         $token = JWTAuth::fromUser($user);
         session(['jwt_token' => $token, 'user_name' => $user->name]);
 
-        return redirect()->route('home')->with('success', 'Đăng ký thành công!');
+        return redirect()->route('login')->with('success', 'Đăng ký thành công!');
     }
 
     // Đăng nhập web
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+public function login(Request $request)
+{
+    $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return back()->with('error', 'Email hoặc mật khẩu không đúng.');
-        }
-
-        $user = auth()->user();
-        session(['jwt_token' => $token, 'user_name' => $user->name]);
-
-        return redirect()->route('dashboard')->with('success', 'Đăng nhập thành công!');
+    if (!$token = JWTAuth::attempt($credentials)) {
+        return back()->with('error', 'Email hoặc mật khẩu không đúng.');
     }
+
+    $user = auth()->user();
+    session(['jwt_token' => $token, 'user_name' => $user->name, 'user_role' => $user->role]);
+    return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công!');
+
+}
 
     // Đăng xuất
     public function logout()
