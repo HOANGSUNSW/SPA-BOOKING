@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+
 class AuthController extends Controller
 {
     /**
@@ -45,7 +46,6 @@ class AuthController extends Controller
                     'type' => 'bearer',
                 ]
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -85,7 +85,6 @@ class AuthController extends Controller
                     'type' => 'bearer',
                 ]
             ]);
-
         } catch (JWTException $e) {
             return response()->json([
                 'status' => 'error',

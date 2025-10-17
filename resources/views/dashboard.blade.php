@@ -11,7 +11,9 @@
                     <i class="fas fa-user me-2"></i> Thông tin tài khoản
                 </div>
                 <div class="card-body">
-                    <p><strong>Tên:</strong> {{ Auth::user()->name }}</p>
+                    <p>
+                        <stzrong>Tên:</strong> {{ Auth::user()->name }}
+                    </p>
                     <p><strong>Email:</strong> {{ Auth::user()->email }}</p>
                     <p><strong>Vai trò:</strong> {{ Auth::user()->role ?? 'Người dùng' }}</p>
                 </div>
