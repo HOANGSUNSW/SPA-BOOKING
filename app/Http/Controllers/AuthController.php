@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class AuthController extends Controller
 {
     /**
-     * Register a new user
+     * Đăng ký tài khoản mới
      */
     public function register(Request $request)
     {
@@ -35,6 +35,7 @@ class AuthController extends Controller
             ]);
 
             $token = JWTAuth::fromUser($user);
+            $expiresIn = auth('api')->factory()->getTTL() * 60; // tính bằng giây
 
             return response()->json([
                 'status' => 'success',
@@ -43,6 +44,7 @@ class AuthController extends Controller
                 'authorisation' => [
                     'token' => $token,
                     'type' => 'bearer',
+                    'expires_in' => $expiresIn
                 ]
             ], 201);
 
@@ -55,7 +57,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Login user and return JWT token
+     * Đăng nhập và nhận JWT Token
      */
     public function login(Request $request)
     {
@@ -67,7 +69,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if (! $token = JWTAuth::attempt($credentials)) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Invalid email or password',
@@ -75,6 +77,7 @@ class AuthController extends Controller
             }
 
             $user = auth()->user();
+            $expiresIn = auth('api')->factory()->getTTL() * 60; // giây
 
             return response()->json([
                 'status' => 'success',
@@ -83,24 +86,26 @@ class AuthController extends Controller
                 'authorisation' => [
                     'token' => $token,
                     'type' => 'bearer',
+                    'expires_in' => $expiresIn
                 ]
             ]);
 
         } catch (JWTException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Could not create token',
+                'message' => 'Could not create token: ' . $e->getMessage(),
             ], 500);
         }
     }
 
     /**
-     * Logout (invalidate the token)
+     * Đăng xuất (vô hiệu hóa token)
      */
     public function logout()
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully logged out',
@@ -114,35 +119,55 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh token (extend session)
+     * Refresh token (tạo token mới khi gần hết hạn)
      */
     public function refresh()
     {
         try {
             $newToken = JWTAuth::refresh(JWTAuth::getToken());
+            $expiresIn = auth('api')->factory()->getTTL() * 60;
+
             return response()->json([
                 'status' => 'success',
+                'message' => 'Token refreshed successfully',
                 'authorisation' => [
                     'token' => $newToken,
                     'type' => 'bearer',
+                    'expires_in' => $expiresIn
                 ]
             ]);
         } catch (JWTException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Token refresh failed',
+                'message' => 'Token refresh failed: ' . $e->getMessage(),
             ], 401);
         }
     }
 
     /**
-     * Get current logged-in user info
+     * Lấy thông tin user đang đăng nhập
      */
     public function me()
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => auth()->user(),
-        ]);
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not authenticated',
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch user info: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

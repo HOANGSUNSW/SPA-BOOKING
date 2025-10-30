@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Login - Anh Thơ Spa')
 
@@ -11,11 +11,17 @@
             <p class="text-muted mb-0">Login to manage your bookings</p>
         </div>
 
-        @if (session('error'))
-            <div class="alert alert-danger text-center">
-                {{ session('error') }}
-            </div>
-        @endif
+@if (session('error'))
+    <div class="alert alert-danger text-center mt-3">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success text-center mt-3">
+        {{ session('success') }}
+    </div>
+@endif
 
         <form method="POST" action="{{ route('login') }}">
             @csrf

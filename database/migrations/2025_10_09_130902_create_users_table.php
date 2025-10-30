@@ -18,9 +18,7 @@ return new class extends Migration
         $table->string('password');
         $table->string('phone')->nullable();
         $table->string('address')->nullable();
-        $table->enum('gender', ['male', 'female', 'other'])->nullable();
-        $table->date('dob')->nullable();
-        $table->enum('role', ['admin', 'staff', 'customer'])->default('customer');
+        $table->enum('role', ['admin', 'staff', 'user'])->default('user');
         $table->timestamps();
     });
 }

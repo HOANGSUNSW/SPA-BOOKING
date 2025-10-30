@@ -13,13 +13,15 @@ use App\Http\Controllers\AuthController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/ping', function () {
-    return response()->json(['message' => 'API is working!']);
-});
+Route::get('/ping', fn() => response()->json(['message' => 'API is working!']));
 
-// Nhóm route cho Auth (JWT)
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/refresh', [AuthController::class, 'refresh']);
-Route::get('/me', [AuthController::class, 'me'])->middleware('auth:api');
+// Không yêu cầu token cho login/register
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Nhóm route cần token JWT
+Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+});

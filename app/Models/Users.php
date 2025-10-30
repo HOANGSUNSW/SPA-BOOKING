@@ -13,7 +13,7 @@ class Users extends Authenticatable implements JWTSubject
     protected $table = 'users';
 
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'address', 'gender', 'dob', 'role'
+        'name', 'email', 'password', 'phone', 'address', 'role'
     ];
 
     protected $hidden = [
@@ -65,5 +65,10 @@ public function bookings()
     public function loyaltyPoints()
     {
         return $this->hasOne(LoyaltyPoint::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
     }
 }

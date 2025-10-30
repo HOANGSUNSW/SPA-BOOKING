@@ -41,9 +41,9 @@ class WebAuthController extends Controller
             'role' => 'user',
         ]);
 
-        // Tự động đăng nhập
-        $token = JWTAuth::fromUser($user);
-        session(['jwt_token' => $token, 'user_name' => $user->name]);
+        // // Tự động đăng nhập
+        // $token = JWTAuth::fromUser($user);
+        // session(['jwt_token' => $token, 'user_name' => $user->name]);
 
         return redirect()->route('login')->with('success', 'Đăng ký thành công!');
     }
@@ -53,21 +53,25 @@ public function login(Request $request)
 {
     $credentials = $request->only('email', 'password');
 
-    if (!$token = JWTAuth::attempt($credentials)) {
-        return back()->with('error', 'Email hoặc mật khẩu không đúng.');
+    if (auth()->attempt($credentials)) {
+        $user = auth()->user();
+        session(['user_name' => $user->name, 'user_role' => $user->role]);
+        return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công!');
     }
 
-    $user = auth()->user();
-    session(['jwt_token' => $token, 'user_name' => $user->name, 'user_role' => $user->role]);
-    return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công!');
-
+    return back()->with('error', 'Email hoặc mật khẩu không đúng.');
 }
 
     // Đăng xuất
-    public function logout()
+public function logout()
+{
+    auth('web')->logout(); // 👈 Bắt buộc thêm 'web' guard
+
+    session()->forget(['user_name', 'user_role']);
+    return redirect()->route('login.form')->with('success', 'Đăng xuất thành công!');
+}
+ public function dashboard()
     {
-        session()->forget(['jwt_token', 'user_name']);
-        auth()->logout();
-        return redirect()->route('login')->with('success', 'Đăng xuất thành công!');
+        return view('admin.dashboard');
     }
 }
